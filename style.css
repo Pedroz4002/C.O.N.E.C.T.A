@@ -1500,6 +1500,10 @@ body.menu-open .menu-toggle span:nth-child(3) {
     padding: 66px 0;
   }
 
+  .contact-short {
+    padding-bottom: 0;
+  }
+
   body.has-floating-cta main {
     padding-bottom: 0;
   }
