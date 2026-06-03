@@ -929,6 +929,27 @@ body.short-page .page-hero {
   box-shadow: none;
 }
 
+.contact-direct {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.contact-direct a {
+  padding: 12px 14px;
+  color: var(--navy-900);
+  background: var(--blue-100);
+  border: 1px solid rgba(17, 103, 255, 0.16);
+  border-radius: var(--radius);
+  font-weight: 800;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.contact-direct a:hover {
+  border-color: rgba(17, 103, 255, 0.38);
+  transform: translateY(-2px);
+}
+
 .support-page .support-steps {
   margin-top: 26px;
 }
