@@ -41,10 +41,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const gap = window.innerWidth <= 620 ? 12 : 18;
     const footerTop = footer.getBoundingClientRect().top;
     const ctaHeight = floatingCta.getBoundingClientRect().height;
-    const bottom = Math.max(gap, window.innerHeight - footerTop + ctaHeight + gap);
+    const canShow = window.scrollY > 260 && footerTop > window.innerHeight - ctaHeight - gap;
 
-    floatingCta.classList.toggle("is-visible", window.scrollY > 260);
-    document.documentElement.style.setProperty("--floating-bottom", `${Math.round(bottom)}px`);
+    floatingCta.classList.toggle("is-visible", canShow);
   }
 
   updateFloatingCtaPosition();
