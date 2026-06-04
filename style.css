@@ -281,6 +281,13 @@ body.menu-open .menu-toggle span:nth-child(3) {
   box-shadow: 0 20px 44px rgba(17, 103, 255, 0.36);
 }
 
+.btn:disabled,
+.btn[disabled] {
+  cursor: wait;
+  opacity: 0.68;
+  transform: none;
+}
+
 .btn-ghost {
   color: var(--white);
   background: rgba(255, 255, 255, 0.1);
@@ -1267,6 +1274,11 @@ body.short-page .page-hero {
 .protocol-result {
   margin: 0;
   color: var(--muted);
+}
+
+.protocol-result {
+  display: grid;
+  gap: 12px;
 }
 
 .protocol-search-row {
