@@ -58,13 +58,18 @@
           <article class="contact-panel reveal">
             <p class="eyebrow">Fale conosco</p>
             <h2>Vamos conversar?</h2>
-            <div class="contact-direct">
-              <a href="https://wa.me/5583998465279" target="_blank" rel="noopener">WhatsApp: +55 83 99846-5279</a>
-              <a href="https://www.instagram.com/pedroh_dsv" target="_blank" rel="noopener">Instagram: @pedroh_dsv</a>
-            </div>
             <form class="contact-form compact-form" data-contact-form novalidate>
+              <label for="tipo">Tipo de atendimento</label>
+              <select id="tipo" name="tipo" required>
+                <option value="duvida">Dúvida - enviar pelo WhatsApp</option>
+                <option value="protocolo">Protocolo geral</option>
+              </select>
+
               <label for="nome">Nome</label>
               <input id="nome" name="nome" type="text" placeholder="Seu nome" required />
+
+              <label for="matricula">Matrícula</label>
+              <input id="matricula" name="matricula" type="text" placeholder="Sua matrícula" />
 
               <label for="email">E-mail</label>
               <input id="email" name="email" type="email" placeholder="seuemail@exemplo.com" required />
@@ -75,6 +80,16 @@
               <button class="btn btn-primary" type="submit">Enviar mensagem</button>
               <p class="form-feedback" data-form-feedback role="status" aria-live="polite"></p>
             </form>
+
+            <div class="protocol-search" data-protocol-box>
+              <h3>Acompanhar protocolo</h3>
+              <p>Pesquise pelo número do processo ou pela matrícula cadastrada neste navegador.</p>
+              <div class="protocol-search-row">
+                <input data-protocol-search type="search" placeholder="Matrícula ou número do processo" aria-label="Pesquisar protocolo" />
+                <button class="btn btn-ghost" type="button" data-protocol-search-button>Pesquisar</button>
+              </div>
+              <div class="protocol-result" data-protocol-result aria-live="polite"></div>
+            </div>
           </article>
         </div>
       </section>
