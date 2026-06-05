@@ -4,39 +4,53 @@ Este projeto usa uma Edge Function para criar protocolos, gerar PDF, salvar no S
 
 ## 1. Criar recursos no Supabase
 
-No terminal, depois de instalar e logar no Supabase CLI:
+O projeto usado pelo site e:
+
+```text
+tcmdsdllbnlvqynkmawy
+```
+
+## 2. Arquivos locais de segredo
+
+Copie os exemplos e preencha os valores reais. Esses arquivos sao ignorados pelo Git.
 
 ```powershell
-supabase link --project-ref SEU_PROJECT_REF
-supabase db push
-supabase functions deploy protocolo
+Copy-Item scripts/supabase.local.example.ps1 scripts/supabase.local.ps1
+Copy-Item supabase/.env.example supabase/.env.local
 ```
 
-## 2. Variaveis obrigatorias
-
-Cadastre estes secrets no Supabase:
+Em `scripts/supabase.local.ps1`, preencha:
 
 ```powershell
-supabase secrets set RESEND_API_KEY="SUA_CHAVE_RESEND"
-supabase secrets set CA_EMAIL="emaildoca@exemplo.com"
-supabase secrets set FROM_EMAIL="Conecta ADM <protocolos@seudominio.com>"
-supabase secrets set PROTOCOL_STORAGE_BUCKET="protocolos"
+$env:SUPABASE_ACCESS_TOKEN = "..."
+$env:SUPABASE_DB_PASSWORD = "..."
 ```
 
-O Supabase ja fornece automaticamente `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` para a Edge Function.
+Em `supabase/.env.local`, preencha:
 
-## 3. Configurar o site
-
-Edite `site-config.js`:
-
-```js
-window.CONECTA_CONFIG = {
-  protocolEndpoint: "https://SEU-PROJETO.supabase.co/functions/v1/protocolo",
-  supabaseAnonKey: "SUA_SUPABASE_ANON_KEY",
-};
+```text
+RESEND_API_KEY=...
+CA_EMAIL=...
+FROM_EMAIL=Conecta ADM <onboarding@resend.dev>
+PROTOCOL_STORAGE_BUCKET=protocolos
 ```
 
-Depois envie a alteracao para o GitHub Pages.
+Importante: se a chave do Resend apareceu em print ou conversa, gere uma nova chave e revogue a antiga.
+
+## 3. Publicar banco, secrets e funcao
+
+Depois de preencher os arquivos locais:
+
+```powershell
+.\scripts\deploy-supabase.ps1
+```
+
+Esse script executa:
+
+- `supabase link`
+- `supabase db push`
+- `supabase secrets set`
+- `supabase functions deploy protocolo --no-verify-jwt --use-api`
 
 ## 4. Fluxo
 
