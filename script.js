@@ -170,7 +170,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const whatsappText = [
         "Olá, Conecta ADM!",
         "",
-        "Tipo: Dúvida",
         `Nome: ${name}`,
         registration ? `Matrícula: ${registration}` : "",
         `E-mail: ${email}`,
