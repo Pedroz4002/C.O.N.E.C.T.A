@@ -8,14 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const toastBox = document.querySelector("[data-toast-box]");
   const contactForm = document.querySelector("[data-contact-form]");
   const formFeedback = document.querySelector("[data-form-feedback]");
-  const protocolSearchInput = document.querySelector("[data-protocol-search]");
-  const protocolSearchButton = document.querySelector("[data-protocol-search-button]");
-  const protocolResult = document.querySelector("[data-protocol-result]");
   const floatingCta = document.querySelector("[data-floating-cta]");
   const footer = document.querySelector(".site-footer");
-  const siteConfig = window.CONECTA_CONFIG || {};
-  const protocolEndpoint = String(siteConfig.protocolEndpoint || "");
-  const supabaseAnonKey = String(siteConfig.supabaseAnonKey || "");
   const whatsappNumber = "5583998465279";
   let toastTimer;
 
@@ -149,129 +143,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  function isProtocolApiConfigured() {
-    return protocolEndpoint.startsWith("https://") && !protocolEndpoint.includes("SEU-PROJETO");
-  }
-
-  async function callProtocolApi(payload) {
-    if (!isProtocolApiConfigured()) {
-      throw new Error("Configure a URL da Edge Function em site-config.js.");
-    }
-
-    const headers = {
-      "Content-Type": "application/json",
-    };
-
-    if (supabaseAnonKey && !supabaseAnonKey.includes("COLE_AQUI")) {
-      headers.apikey = supabaseAnonKey;
-      headers.Authorization = `Bearer ${supabaseAnonKey}`;
-    }
-
-    const response = await fetch(protocolEndpoint, {
-      method: "POST",
-      headers,
-      body: JSON.stringify(payload),
-    });
-
-    const data = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-      throw new Error(data.error || "Nao foi possivel concluir a solicitacao.");
-    }
-
-    return data;
-  }
-
-  function clearProtocolResult() {
-    if (!protocolResult) return;
-    protocolResult.innerHTML = "";
-  }
-
-  function renderProtocol(protocol) {
-    if (!protocolResult) return;
-
-    const article = document.createElement("article");
-    article.className = "protocol-card";
-
-    const title = document.createElement("h4");
-    title.textContent = `Processo ${protocol.numero}`;
-
-    const meta = document.createElement("p");
-    meta.textContent = `${protocol.nome} | Matrícula: ${protocol.matricula} | ${formatDate(protocol.created_at)}`;
-
-    const status = document.createElement("p");
-    status.textContent = `Status: ${protocol.status || "Recebido"}`;
-
-    const message = document.createElement("p");
-    message.textContent = protocol.mensagem || "";
-
-    article.append(title, meta, status, message);
-
-    if (protocol.pdf_url) {
-      const pdfLink = document.createElement("a");
-      pdfLink.className = "btn btn-ghost";
-      pdfLink.href = protocol.pdf_url;
-      pdfLink.target = "_blank";
-      pdfLink.rel = "noopener";
-      pdfLink.textContent = "Abrir PDF";
-      article.appendChild(pdfLink);
-    }
-
-    protocolResult.appendChild(article);
-  }
-
-  function renderProtocolList(protocols) {
-    clearProtocolResult();
-
-    if (!protocols?.length) {
-      protocolResult.textContent = "Nenhum protocolo encontrado.";
-      return;
-    }
-
-    protocols.forEach(renderProtocol);
-  }
-
-  function formatDate(value) {
-    if (!value) return "";
-
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return String(value);
-
-    return new Intl.DateTimeFormat("pt-BR", {
-      dateStyle: "short",
-      timeStyle: "short",
-    }).format(date);
-  }
-
-  async function searchProtocol() {
-    if (!protocolSearchInput || !protocolResult) return;
-
-    const query = protocolSearchInput.value.trim();
-    if (!query) {
-      protocolResult.textContent = "Digite a matrícula ou o número do processo.";
-      return;
-    }
-
-    protocolSearchButton?.setAttribute("disabled", "true");
-    protocolResult.textContent = "Pesquisando...";
-
-    try {
-      const data = await callProtocolApi({ action: "search", query });
-      renderProtocolList(data.protocolos || []);
-    } catch (error) {
-      protocolResult.textContent = error instanceof Error ? error.message : "Erro ao pesquisar protocolo.";
-    } finally {
-      protocolSearchButton?.removeAttribute("disabled");
-    }
-  }
-
-  // Valida o formulario, envia duvidas ao WhatsApp e gera protocolo no Supabase.
+  // Envia a mensagem de contato pelo WhatsApp com texto pronto.
   if (contactForm && formFeedback) {
-    contactForm.addEventListener("submit", async (event) => {
+    contactForm.addEventListener("submit", (event) => {
       event.preventDefault();
 
       const formData = new FormData(contactForm);
-      const type = String(formData.get("tipo") || "duvida");
       const name = String(formData.get("nome") || "").trim();
       const registration = String(formData.get("matricula") || "").trim();
       const email = String(formData.get("email") || "").trim();
@@ -290,62 +167,21 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if (type === "duvida") {
-        const whatsappText = [
-          "Olá, Conecta ADM!",
-          "",
-          "Tipo: Dúvida",
-          `Nome: ${name}`,
-          registration ? `Matrícula: ${registration}` : "",
-          `E-mail: ${email}`,
-          "",
-          `Mensagem: ${message}`,
-        ].filter(Boolean).join("\n");
+      const whatsappText = [
+        "Olá, Conecta ADM!",
+        "",
+        "Tipo: Dúvida",
+        `Nome: ${name}`,
+        registration ? `Matrícula: ${registration}` : "",
+        `E-mail: ${email}`,
+        "",
+        `Mensagem: ${message}`,
+      ].filter(Boolean).join("\n");
 
-        window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappText)}`, "_blank", "noopener");
-        formFeedback.textContent = "Abrimos o WhatsApp com a sua mensagem pronta para envio.";
-        showToast("Mensagem pronta no WhatsApp.");
-        contactForm.reset();
-        return;
-      }
-
-      if (!registration) {
-        formFeedback.textContent = "Informe a matrícula para gerar um protocolo.";
-        showToast("A matrícula é necessária para protocolo.");
-        return;
-      }
-
-      const submitButton = contactForm.querySelector('button[type="submit"]');
-      submitButton?.setAttribute("disabled", "true");
-      formFeedback.textContent = "Gerando protocolo, PDF e envio automático por e-mail...";
-
-      try {
-        const data = await callProtocolApi({
-          action: "create",
-          nome: name,
-          email,
-          matricula: registration,
-          mensagem: message,
-        });
-
-        clearProtocolResult();
-        renderProtocol(data.protocolo);
-        formFeedback.textContent = `Protocolo ${data.protocolo.numero} gerado e enviado automaticamente por e-mail.`;
-        showToast("Protocolo enviado com sucesso.");
-        contactForm.reset();
-      } catch (error) {
-        formFeedback.textContent = error instanceof Error ? error.message : "Erro ao gerar protocolo.";
-        showToast("Nao foi possivel gerar o protocolo.");
-      } finally {
-        submitButton?.removeAttribute("disabled");
-      }
+      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappText)}`, "_blank", "noopener");
+      formFeedback.textContent = "Abrimos o WhatsApp com a sua mensagem pronta para envio.";
+      showToast("Mensagem pronta no WhatsApp.");
+      contactForm.reset();
     });
   }
-
-  protocolSearchButton?.addEventListener("click", searchProtocol);
-  protocolSearchInput?.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter") return;
-    event.preventDefault();
-    searchProtocol();
-  });
 });
