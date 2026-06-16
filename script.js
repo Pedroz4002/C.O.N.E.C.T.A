@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const formFeedback = document.querySelector("[data-form-feedback]");
   const floatingCta = document.querySelector("[data-floating-cta]");
   const footer = document.querySelector(".site-footer");
-  const whatsappNumber = "5583998465279";
+  const whatsappNumber = "5583998586866";
   let toastTimer;
 
   // Exibe uma mensagem temporaria para botoes simulados e links sociais.
