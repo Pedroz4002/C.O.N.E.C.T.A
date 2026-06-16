@@ -898,6 +898,19 @@ body.short-page .page-hero {
   grid-template-columns: repeat(3, 1fr);
 }
 
+.proposals-page {
+  background: var(--surface);
+}
+
+.proposals-page-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.proposals-page-grid .proposal-card {
+  min-height: auto;
+}
+
 /* ================================
    Página Apoie
 ================================ */
@@ -977,12 +990,20 @@ body.short-page .page-hero {
 .member-photo {
   display: grid;
   place-items: center;
-  min-height: 220px;
+  min-height: auto;
+  aspect-ratio: 3 / 4;
   color: rgba(255, 255, 255, 0.72);
   background:
     linear-gradient(180deg, rgba(3, 18, 48, 0.18), rgba(3, 18, 48, 0.62)),
     radial-gradient(circle at 72% 18%, rgba(95, 167, 255, 0.52), transparent 28%),
     linear-gradient(135deg, var(--navy-800), var(--navy-950));
+}
+
+.member-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 
 .member-photo span {
@@ -997,8 +1018,12 @@ body.short-page .page-hero {
   text-transform: uppercase;
 }
 
+.member-info {
+  padding: 20px 22px 24px;
+}
+
 .member-role {
-  margin: 22px 22px 8px;
+  margin: 0 0 6px;
   color: var(--blue-600);
   font-size: 0.75rem;
   font-weight: 900;
@@ -1008,10 +1033,17 @@ body.short-page .page-hero {
 }
 
 .member-card h3 {
-  min-height: 56px;
-  margin: 0;
-  padding: 0 22px 24px;
+  min-height: 0;
+  margin: 0 0 10px;
+  padding: 0;
   font-size: 1.12rem;
+}
+
+.member-period {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 800;
 }
 
 /* ================================
@@ -1761,7 +1793,7 @@ body.short-page .page-hero {
 
   .member-photo {
     min-height: auto;
-    aspect-ratio: 1;
+    aspect-ratio: 3 / 4;
   }
 
   .member-photo span {
@@ -1770,17 +1802,26 @@ body.short-page .page-hero {
     font-size: 0.68rem;
   }
 
+  .member-info {
+    padding: 14px 12px 16px;
+  }
+
   .member-role {
-    margin: 14px 12px 6px;
+    margin: 0 0 5px;
     font-size: 0.62rem;
     line-height: 1.25;
   }
 
   .member-card h3 {
-    min-height: 48px;
-    padding: 0 12px 14px;
+    min-height: 0;
+    margin-bottom: 7px;
+    padding: 0;
     font-size: 0.9rem;
     line-height: 1.2;
+  }
+
+  .member-period {
+    font-size: 0.74rem;
   }
 
   .event-item {
